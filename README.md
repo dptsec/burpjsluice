@@ -15,5 +15,7 @@ This has only been tested on Linux.
 
 # References
 https://bishopfox.com/blog/power-pen-tests-with-montoya-api
+
 https://github.com/PortSwigger/additional-cors-checks/
+
 https://bishopfox.com/blog/jsluice-javascript-technical-deep-dive
