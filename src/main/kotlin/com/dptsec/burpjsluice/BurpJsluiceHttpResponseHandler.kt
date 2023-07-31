@@ -6,15 +6,14 @@ import burp.api.montoya.proxy.http.InterceptedResponse
 import burp.api.montoya.proxy.http.ProxyResponseHandler
 import burp.api.montoya.proxy.http.ProxyResponseReceivedAction
 import burp.api.montoya.proxy.http.ProxyResponseToBeSentAction
-import java.util.concurrent.ExecutorService
+import kotlinx.coroutines.*
 
 class BurpJsluiceHttpResponseHandler(
     private val api: MontoyaApi,
-    private val executor: ExecutorService,
     private val gui: BurpJsluiceTab
 ) :
     ProxyResponseHandler {
-
+    private val dispatcher = newFixedThreadPoolContext(1, "App Background")
     private fun isScript(interceptedResponse: InterceptedResponse): Boolean {
         return interceptedResponse.inferredMimeType() == MimeType.SCRIPT || interceptedResponse.statedMimeType() == MimeType.SCRIPT
     }
@@ -35,13 +34,14 @@ class BurpJsluiceHttpResponseHandler(
             )
         }
 
-        /* Send a worker to the thread pool */
-        executor.execute(
+        /* Launch coroutine for background processing */
+        GlobalScope.launch(dispatcher) {
             BurpJsluiceExec(api, gui).run(
                 interceptedResponse.bodyToString(),
                 interceptedResponse.initiatingRequest().url()
             )
-        )
+        }
+
         return ProxyResponseReceivedAction.continueWith(
             interceptedResponse
         )

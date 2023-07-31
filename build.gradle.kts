@@ -18,6 +18,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("net.portswigger.burp.extensions:montoya-api:2023.3")
     implementation("commons-validator:commons-validator:1.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
 }
 
 tasks.test {
